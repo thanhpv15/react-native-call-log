@@ -45,6 +45,9 @@ public void show( Callback callBack) {
     int date = cursor.getColumnIndex(CallLog.Calls.DATE);
     int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);  
     int name = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
+    int subIndex = cursor.getColumnIndex("subscription_id");
+    int simIndex = cursor.getColumnIndex("simid");
+
     JSONArray callArray = new JSONArray();
     while (cursor.moveToNext()) {
         String phNumber = cursor.getString(number);
@@ -53,6 +56,10 @@ public void show( Callback callBack) {
         Date callDayTime = new Date(Long.valueOf(callDate));
         String callDuration = cursor.getString(duration);
         String cachedName = cursor.getString(name);
+        String sub = cursor.getString(subIndex);
+        String simId = cursor.getString(simIndex);
+        String subscription = (sub == null || "".equals(sub))? simId: sub;
+        subscription = subscription == null ? "" : subscription;
         String dir = null;
         int dircode = Integer.parseInt(callType);
         switch (dircode) {
@@ -76,7 +83,8 @@ public void show( Callback callBack) {
             callObj.put("callDuration", callDuration);
             callObj.put("callDayTime", callDayTime);
             callObj.put("cachedName", cachedName);
-            callArray.put(callObj);
+            callObj.put("subscription", subscription);
+            callArray.put(callObj); 
         }
         catch(JSONException e){
             e.printStackTrace();
