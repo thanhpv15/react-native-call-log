@@ -56,8 +56,8 @@ public void show( Callback callBack) {
         Date callDayTime = new Date(Long.valueOf(callDate));
         String callDuration = cursor.getString(duration);
         String cachedName = cursor.getString(name);
-        String sub = cursor.getString(subIndex);
-        String simId = cursor.getString(simIndex);
+        String sub = subIndex == -1 ? null : cursor.getString(subIndex);
+        String simId = simIndex == -1 ? null : cursor.getString(simIndex);
         String subscription = (sub == null || "".equals(sub))? simId: sub;
         subscription = subscription == null ? "" : subscription;
         String dir = null;
