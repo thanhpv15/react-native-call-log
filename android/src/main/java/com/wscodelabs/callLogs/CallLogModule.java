@@ -7,6 +7,8 @@ import android.database.Cursor;
 import java.util.Date;
 import android.content.Context;
 import org.json.*;
+import android.net.Uri;
+import android.os.Build;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -32,10 +34,18 @@ public class CallLogModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
 public void show( Callback callBack) {
-    
+    boolean hasSlotId = false;
     StringBuffer stringBuffer = new StringBuffer();
-    Cursor cursor = this.context.getContentResolver().query(CallLog.Calls.CONTENT_URI,
-            null, null, null, CallLog.Calls.DATE + " DESC");
+	String deviceMan = android.os.Build.MANUFACTURER;
+    if (Build.VERSION_CODES.M <= Build.VERSION.SDK_INT && "samsung".equals(deviceMan)){
+		hasSlotId = true;
+		uri = Uri.parse("content://logs/call");
+	}else {
+		uri = CallLog.Calls.CONTENT_URI;
+	}
+	Cursor cursor = this.getContentResolver().query(uri,
+			null, null, null, CallLog.Calls.DATE + " DESC");
+	
     if (cursor == null) {
         callBack.invoke("[]");
         return;
@@ -46,7 +56,7 @@ public void show( Callback callBack) {
     int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);  
     int name = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
     int subIndex = cursor.getColumnIndex("subscription_id");
-    int simIndex = cursor.getColumnIndex("simid");
+    int simIndex = cursor.getColumnIndex(hasSlotId ? "sim_id" : "simid");
 
     JSONArray callArray = new JSONArray();
     while (cursor.moveToNext()) {
@@ -84,6 +94,9 @@ public void show( Callback callBack) {
             callObj.put("callDayTime", callDayTime);
             callObj.put("cachedName", cachedName);
             callObj.put("subscription", subscription);
+			if (hasSlotId) {
+				callObj.put("slotId", simId);
+			}
             callArray.put(callObj); 
         }
         catch(JSONException e){
