@@ -165,8 +165,8 @@ public class CallLogModule extends ReactContextBaseJavaModule {
                     break;
             }
 
-            if (phNumber.equals(phone)) continue;
-            if (dir.equals(phoneType)) continue;
+            if (!phNumber.equals(phone)) continue;
+            if (!dir.equals(phoneType)) continue;
 
             long logTime = Long.parseLong(callDate);
             long start = Long.parseLong(startTime);
