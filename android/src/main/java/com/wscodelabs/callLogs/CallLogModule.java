@@ -112,7 +112,7 @@ public class CallLogModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getLog(String type, String phone, String startTime, Callback callBack) {
+    public void getLog(String phoneType, String phone, String startTime, Callback callBack) {
         boolean hasSlotId = false;
         Uri uri;
         StringBuffer stringBuffer = new StringBuffer();
@@ -166,7 +166,7 @@ public class CallLogModule extends ReactContextBaseJavaModule {
             }
 
             if (phNumber.equals(phone)) continue;
-            if (dir.equals(type)) continue;
+            if (dir.equals(phoneType)) continue;
 
             long logTime = Long.parseLong(callDate);
             long start = Long.parseLong(startTime);
