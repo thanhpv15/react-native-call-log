@@ -166,7 +166,8 @@ public class CallLogModule extends ReactContextBaseJavaModule {
             }
 
             if (phNumber == null || !phNumber.equals(phone)) continue;
-            if (dir == null || !dir.equals(phoneType)) continue;
+            if (dir == null || phoneType == null)  continue;
+            if (!dir.equals(phoneType) && !phoneType.equals("IGNORE")) continue;
 
             JSONObject callObj = new JSONObject();
             try{
